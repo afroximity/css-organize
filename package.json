@@ -1,0 +1,25 @@
+{
+  "name": "css-organize",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "oguzhan.ern@hotmail.com",
+  "license": "MIT",
+  "bin": {
+    "css-organize": "./app.js"
+  },
+  "dependencies": {
+    "chroma-js": "^2.4.2",
+    "color-string": "^1.9.1",
+    "css-parse": "^2.0.0",
+    "cssnano": "^5.1.15",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.4"
+  },
+  "devDependencies": {
+    "postcss-cli": "^10.1.0"
+  }
+}
