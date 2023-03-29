@@ -44,14 +44,14 @@
     const hexMatches = decl.value.match(hexRegex);
     if (hexMatches) {
       hexMatches.forEach((hexMatch) => {
-        colorValues.add(hexMatch);
+        colorValues.add(hexMatch.trim());
       });
     }
 
     const rgbMatches = decl.value.match(rgbRegex);
     if (rgbMatches) {
       rgbMatches.forEach((rgbMatch) => {
-        colorValues.add(`rgb(${rgbMatch})`);
+        colorValues.add(`rgb(${rgbMatch.trim()})`);
       });
     }
   });
@@ -80,21 +80,23 @@
   Object.entries(colorGroups).forEach(([roundedColor, colorValues], index) => {
     const varName = `--color-${index}`;
     variableDeclarations += `${varName}: ${roundedColor};\n`;
-    newCss += `/* ${colorValues.join(", ")} */\n`;
-    newCss += `${varName}: ${roundedColor};\n`;
+
     colorValues.forEach((colorValue) => {
       parsedCss.walkDecls((decl) => {
-        if (decl.value === colorValue) {
-          decl.value = `var(${varName})`;
+        const regex = new RegExp(`(${colorValue})(?![^\\(]*\\))`, "g");
+        if (decl.value.match(regex)) {
+          decl.value = decl.value.replace(regex, `var(${varName})`);
         }
       });
     });
+
+    newCss += `/* ${colorValues.join(", ")} */\n`;
   });
 
-  // Insert variable declarations at beginning of new CSS file
-  newCss = `:root{\n${variableDeclarations}\n} \n${parsedCss}`;
+// Insert variable declarations at beginning of new CSS file
+  newCss = `:root {\n${variableDeclarations}} \n${parsedCss}`;
 
-  // Write new CSS file
+// Write new CSS file
   fs.writeFile(targetPath, newCss, { flag: "wx" }, (err) => {
     if (err) {
       console.error(err);
